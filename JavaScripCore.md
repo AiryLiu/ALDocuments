@@ -1,4 +1,7 @@
-##相关类
+JavascripCore
+---
+
+## 相关类
 
 JSContext：JS执行环境，通过JSVirtualMachine管理对象生命周期
 JSValue：对JS的操作、OC和JS对象的转换 都通过它，一个JSValue对象强引用一个JSContext对象
@@ -6,9 +9,9 @@ JSManagedValue：JS和OC对象的内存管理辅助对象。JS是垃圾回收机
 JSVirtualMachine：JS虚拟机（运行环境），有独立的堆空间和垃圾回收机制
 JSExport：想在JS中使用OC对象（对象、方法、属性），OC对象需事先JSExport协议（或使用block方式#brilliant）
 
-##OC与JS通信
+## OC与JS通信
 
-###OC call JS：
+### OC call JS：
 ```
     self.context = [[JSContext alloc] init];
 
@@ -21,9 +24,9 @@ JSExport：想在JS中使用OC对象（对象、方法、属性），OC对象需
     NSLog(@"---%@", @([n toInt32]));//---5
 ```
 
-###JS call OC：
+### JS call OC：
 
-####block方式：
+#### block方式：
 ```
     self.context = [[JSContext alloc] init];
     
@@ -34,7 +37,7 @@ JSExport：想在JS中使用OC对象（对象、方法、属性），OC对象需
     [self.context evaluateScript:@"add(2,3)"];
 ```
 
-####JSExport协议方式：
+#### JSExport协议方式：
 ```
 //定义一个JSExport protocol
 @protocol JSExportTest <JSExport>
@@ -105,13 +108,13 @@ JSExportAs(add, - (NSInteger)add:(NSInteger)a b:(NSInteger)b);
 @end
 ```
 
-##内存管理：
+## 内存管理：
 
 OC使用ARC（引用计数）
 JS使用GC（垃圾回收），且所有对象都是强引用，但GC会帮它打破循环引用
 使用 JavaScriptCore 里提供的 API ，正常情况下无需关注OC 和 JS 对象的内存管理问题。但是还是有几个问题需要注意：
 
-###1、不要在block里面直接使用context，或者使用外部的JSValue对象。
+### 1、不要在block里面直接使用context，或者使用外部的JSValue对象。
 ```
 // 错误示例
 // e.g.1
@@ -138,7 +141,7 @@ self.context[@"log"] = ^(NSString *str){
 ```
 
 
-###2、OC对象不要用属性直接保存JSValue对象，容易循环引用
+### 2、OC对象不要用属性直接保存JSValue对象，容易循环引用
 
 ```
 // 错误示例
@@ -283,9 +286,9 @@ JSManagedValue 的 owner 必须能在OC 中访问。在JSVirtualMachine 中 手�
 }
 ```
 
-###3、不要在不同的 JSVirtualMachine 之间进行传递JS对象
+### 3、不要在不同的 JSVirtualMachine 之间进行传递JS对象
 
 一个 JSVirtualMachine可以运行多个context，由于都是在同一个 堆内存 和同一个 垃圾回收 下，所以相互之间传值是没问题的。但是如果在不同的 JSVirtualMachine传值，垃圾回收就不知道他们之间的关系了，可能会引起异常。
 
-##线程
+## 线程
 
